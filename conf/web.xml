@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+    
+<web-app>
+	<display-name>Test servlets</display-name>
+	
+	<servlet-mapping>
+      	<servlet-name>AustinGreeting</servlet-name>
+      	<url-pattern>helloWorld</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      	<servlet-name>busy</servlet-name>
+      	<url-pattern>busy</url-pattern>
+      	<servlet-class>edu.upenn.cis455.SampleServlet.BusyServlet</servlet-class>
+      	<!-- Load this servlet at server startup time -->
+      	<load-on-startup/>
+    </servlet>
+    
+    <servlet>
+	     <servlet-name>cookie1</servlet-name>
+	     <url-pattern>cookie1</url-pattern>
+	     <servlet-class>edu.upenn.cis455.SampleServlet.CookieServlet1</servlet-class>
+	     <!-- Load this servlet at server startup time -->
+	     <load-on-startup/>
+    </servlet>
+    
+    <servlet>
+	     <servlet-name>cookie2</servlet-name>
+	     <url-pattern>cookie2</url-pattern>
+	     <servlet-class>edu.upenn.cis455.SampleServlet.CookieServlet2</servlet-class>
+	     <!-- Load this servlet at server startup time -->
+	     <load-on-startup/>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>cookie3</servlet-name>
+		<url-pattern>cookie3</url-pattern>
+		<servlet-class>edu.upenn.cis455.SampleServlet.CookieServlet3</servlet-class>
+		<!-- Load this servlet at server startup time -->
+		<load-on-startup/>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>demo</servlet-name>
+		<url-pattern>demo</url-pattern>
+		<description>
+			This is a simple demonstration servlet.
+		</description>
+		<servlet-class>edu.upenn.cis455.SampleServlet.DemoServlet</servlet-class>
+		<!-- Load this servlet at server startup time -->
+		<load-on-startup/>
+    </servlet>
+    
+    <servlet>
+	    <servlet-name>session1</servlet-name>
+	    <url-pattern>session1</url-pattern>
+	    <servlet-class>edu.upenn.cis455.SampleServlet.SessionServlet1</servlet-class>
+	    <!-- Load this servlet at server startup time -->
+	    <load-on-startup/>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>session2</servlet-name>
+		<url-pattern>session2</url-pattern>
+		<servlet-class>edu.upenn.cis455.SampleServlet.SessionServlet2</servlet-class>
+		<!-- Load this servlet at server startup time -->
+		<load-on-startup/>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>session3</servlet-name>
+		<url-pattern>session3</url-pattern>
+		<servlet-class>edu.upenn.cis455.SampleServlet.SessionServlet3</servlet-class>
+		<!-- Load this servlet at server startup time -->
+		<load-on-startup/>
+    </servlet> 
+    
+    <servlet>
+		<servlet-name>init</servlet-name>
+		<url-pattern>init</url-pattern>
+		<description>
+	        This servlet checks for the context init parameter "webmaster" from
+	        above, and the servlet init parameter "TestParam" from below.
+		</description>
+		<servlet-class>edu.upenn.cis455.SampleServlet.InitParamServlet</servlet-class>
+		<!-- Load this servlet at server startup time -->
+		<init-param>
+			<param-name>TestParam</param-name>
+			<param-value>1776</param-value>
+		</init-param>
+		<load-on-startup/>
+    </servlet>
+</web-app>

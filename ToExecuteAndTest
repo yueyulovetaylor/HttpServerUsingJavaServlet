@@ -1,0 +1,27 @@
+This file is written for different phase testing and overall execution
+
+1. Opening the server, type in the following command in Terminal
+
+java -cp target/WEB-INF/lib/servlet-api.jar:target/WEB-INF/lib/webserver.jar edu.upenn.cis455.webserver.HttpServer 
+8080 /home/cis455/workspace/yueyu/HW1MS2 conf/web.xml
+
+2. Cookies in http request
+
+GET /spec.html HTTP/1.1
+Host: www.example.org
+Cookie: theme=light; sessionToken=abc123
+
+Construct a cookie object requires a name and a value, i.e Cookie(inputName, inputValue)
+
+3. Test 1: Hello World:    GET /helloWorld HTTP/1.0 
+						   GET /helloWorld?para1=val1;para2=val2&para3=val3 HTTP/1.0
+						   
+   Test 2: Post:           POST /helloWorld HTTP/1.1
+   						   HOST: yueyu.com
+   						   Content-Length: 20
+   						   
+   						   post1=val1&post2=val2
+   						   
+   Test 3: Cookie:		   GET /helloWorld HTTP/1.0
+   						   Cookie: theme=light; sessionToken=abc123
+   						   Cookie: name=yueyu
