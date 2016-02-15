@@ -130,8 +130,10 @@ public class TestHarness {
 				
 				System.out.println("--- TestHarness.handler.characters(): parse init_param into: " + this.m_servletName);
 				System.out.println(m_paramName + ": " + value);
+				System.out.println("Servlet name: " + this.m_servletName);
+				System.out.println("Servlet contains: " + this.m_servletParams.entrySet());
 
-				if (this.m_servletParams.containsKey(this.m_servletParams)) {
+				if (this.m_servletParams.containsKey(this.m_servletName)) {
 					System.out.println("--- TestHarness.handler.characters(): putin HashMap: " + m_paramName);
 					this.m_servletParams.get(this.m_servletName).put(m_paramName, value);
 				}
@@ -142,6 +144,8 @@ public class TestHarness {
 					curInitParam.put(m_paramName, value);
 					this.m_servletParams.put(this.m_servletName, curInitParam);
 				}
+				
+				System.out.println("After insertion: Servlet contains: " + this.m_servletParams.entrySet());
 				
 //				FakeContext fContext = new FakeContext();
 //				fContext.setAttribute(m_paramName, value);
@@ -185,7 +189,11 @@ public class TestHarness {
 	
 	public static FakeContext createContext(Handler h) {
 		FakeContext fc = new FakeContext();
+		
+		System.out.println("--- TestHarness.createContext() contextParams: " + h.m_contextParams.entrySet());
+		
 		for (String param : h.m_contextParams.keySet()) {
+			System.out.println(param + ": " + h.m_contextParams.get(param));
 			fc.setInitParam(param, h.m_contextParams.get(param));
 		}
 		return fc;
@@ -197,10 +205,12 @@ public class TestHarness {
 		for (String servletName : h.m_servlets.keySet()) {
 			FakeConfig config = new FakeConfig(servletName, fc);
 			String className = h.m_servlets.get(servletName);
-			Class servletClass = Class.forName(className);
+			Class servletClass = Class.forName("edu.upenn.cis455.SampleServlet." + className);
 			HttpServlet servlet = (HttpServlet) servletClass.newInstance();
 			
 			HashMap<String,String> servletParams = h.m_servletParams.get(servletName);
+//			System.out.println("Servlet parameter size: " + servletParams.size());
+			
 			if (servletParams != null) {
 				for (String param : servletParams.keySet()) {
 					System.out.println("Set parameters: " + param);
@@ -208,11 +218,11 @@ public class TestHarness {
 				}
 			}
 			
-			System.out.println(config);
+//			System.out.println(config);
 			
 			servlet.init(config);
-			System.out.println(servletName + ": " + servlet);
-			System.out.println(servlet.getServletConfig());
+//			System.out.println(servletName + ": " + servlet);
+//			System.out.println("TestParam: " + servlet.getServletConfig().getInitParameter("TestParam"));
 			servlets.put(servletName, servlet);
 		}
 		

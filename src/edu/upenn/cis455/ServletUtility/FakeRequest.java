@@ -3,10 +3,13 @@ package edu.upenn.cis455.ServletUtility;
 import java.io.BufferedReader;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -14,6 +17,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -21,7 +26,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.sun.net.httpserver.HttpServer;
+
 import edu.upenn.cis455.webserver.SessionContainer;
+import edu.upenn.cis455.webserver.DaemonThreadX2;
 
 /*
  * This class deal with the request parsed in from the constructor
@@ -33,7 +41,10 @@ public class FakeRequest implements HttpServletRequest {
 	public HashMap<String, ArrayList<String>> headerItems
 			= new HashMap<String, ArrayList<String>>();		// Read from http request line 2 and beyond
 	
+	final String DateTimeFormat = "EEE, d MMM yyyy HH:mm:ss Z";
+	
 	public final String BASIC_AUTH = "BASIC";
+	String characterEncoding = "ISO-8859-1";
 
 	// master objects parsed in from ResponseHandler
 	Socket curSocket;
@@ -48,17 +59,19 @@ public class FakeRequest implements HttpServletRequest {
 	
 	SessionContainer curSessionContainer;
 	String sessionID = "-1";
+	String pathInfo;
 	
 	/*
 	 * Constructor. aiming at initialize the FakeRequest object
 	 */
-	public FakeRequest(Socket inputSocket, BufferedReader inputIn, 
+	public FakeRequest(String inputPathInfo, Socket inputSocket, BufferedReader inputIn, 
 					   String inputCurLine1, SessionContainer inputSC) {
 		System.out.println("----- FakeRequest:FakeRequest() Entering");
 		
 		this.curSocket = inputSocket;
 		this.curIn = inputIn;
 		this.curLine1 = inputCurLine1;
+		this.pathInfo = inputPathInfo;
 		
 		this.curSessionContainer = inputSC;
 		
@@ -292,11 +305,26 @@ public class FakeRequest implements HttpServletRequest {
 		return toReturn;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
+	/* 
+	 * change the input date String to long
 	 */
 	public long getDateHeader(String arg0) {
-		// TODO Auto-generated method stub
+		String dateStr = this.getHeader(arg0);
+		long result = 0;
+		
+		if (dateStr == null) {
+			return -1;
+		}
+		SimpleDateFormat sf = new SimpleDateFormat(this.DateTimeFormat);
+		
+		try {
+			result = sf.parse(dateStr).getTime();
+		} 
+		catch (ParseException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException();
+		}
+		
 		return 0;
 	}
 
@@ -327,51 +355,56 @@ public class FakeRequest implements HttpServletRequest {
 		else return Collections.enumeration(value);
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
+	/* 
+	 * return all header names
 	 */
 	public Enumeration getHeaderNames() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> headerNamesSet = this.headerItems.keySet();
+		Vector<String> vec = new Vector<String>(headerNamesSet);
+		
+		return vec.elements();
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getIntHeader(java.lang.String)
+	/* 
+	 * Return an integer style header
 	 */
 	public int getIntHeader(String arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+		String intValue = this.getHeader(arg0);
+		if (intValue == null) {
+			return -1;
+		}
+		else {
+			return Integer.parseInt(intValue);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getMethod()
+	/* 
+	 * Return the method (GET or POST)
 	 */
 	public String getMethod() {
 		return m_method;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getPathInfo()
+	/* 
+	 * Just return the pathinfo parameter
 	 */
 	public String getPathInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.pathInfo;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getPathTranslated()
+	/* 
+	 * Just return null
 	 */
 	public String getPathTranslated() {
 		// For simplification, just return null
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getContextPath()
+	/* 
+	 * For servlets in the default (root) context, this method returns "".
 	 */
 	public String getContextPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	/*
@@ -387,59 +420,66 @@ public class FakeRequest implements HttpServletRequest {
 		else return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getRemoteUser()
+	/* 
+	 * return null if the user has not been authenticated
 	 */
 	public String getRemoteUser() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#isUserInRole(java.lang.String)
+	/* 
+	 * If the user has not been authenticated, the method returns false.
 	 */
 	public boolean isUserInRole(String arg0) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getUserPrincipal()
+	/* 
+	 * No user authenticated return null
 	 */
 	public Principal getUserPrincipal() {
 		// For simplification, just return null
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getRequestedSessionId()
+	/* 
+	 * Returns the session ID specified by the client. 
 	 */
 	public String getRequestedSessionId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.sessionID;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getRequestURI()
+	/* 
+	 * Return the URI before '?'
 	 */
 	public String getRequestURI() {
-		// TODO Auto-generated method stub
-		return null;
+		int posOfQM = this.uri.indexOf('?');
+		
+		if (posOfQM == -1) {
+			return this.uri;
+		}
+		
+		else {
+			return this.uri.substring(0, posOfQM);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getRequestURL()
+	/* 
+	 * return localhost + uri
 	 */
 	public StringBuffer getRequestURL() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuffer sb = new StringBuffer();
+		sb.append("http://localhost:").append(DaemonThreadX2.portNumber).append(this.getRequestURI());
+		
+		return sb;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#getServletPath()
 	 */
 	public String getServletPath() {
-		// TODO Auto-generated method stub
-		return null;
+		if (this.pathInfo == null) return null;
+		else return this.uri;
 	}
 
 	/* 
@@ -479,35 +519,32 @@ public class FakeRequest implements HttpServletRequest {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdValid()
+	/* 
+	 * See whether sessionID is valid
 	 */
 	public boolean isRequestedSessionIdValid() {
-		// TODO Auto-generated method stub
-		return false;
+		if (!this.sessionID.equals(-1)) return true;
+		else return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromCookie()
 	 */
 	public boolean isRequestedSessionIdFromCookie() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.headerItems.containsKey("SessionID");
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromURL()
 	 */
 	public boolean isRequestedSessionIdFromURL() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.curLine1.contains("sessionID=");
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
 	 */
 	public boolean isRequestedSessionIdFromUrl() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -515,7 +552,6 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
 	 */
 	public Object getAttribute(String arg0) {
-		// TODO Auto-generated method stub
 		return m_props.get(arg0);
 	}
 
@@ -523,7 +559,6 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getAttributeNames()
 	 */
 	public Enumeration getAttributeNames() {
-		// TODO Auto-generated method stub
 		return m_props.keys();
 	}
 
@@ -531,8 +566,7 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getCharacterEncoding()
 	 */
 	public String getCharacterEncoding() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.characterEncoding;
 	}
 
 	/* (non-Javadoc)
@@ -540,24 +574,25 @@ public class FakeRequest implements HttpServletRequest {
 	 */
 	public void setCharacterEncoding(String arg0)
 			throws UnsupportedEncodingException {
-		// TODO Auto-generated method stub
-
+		this.characterEncoding = arg0;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getContentLength()
 	 */
 	public int getContentLength() {
-		// TODO Auto-generated method stub
-		return 0;
+		String contentLength = getHeader("Content-Length");
+		if (contentLength == null) return 0;
+		return Integer.parseInt(contentLength);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getContentType()
 	 */
 	public String getContentType() {
-		// TODO Auto-generated method stub
-		return null;
+		String contentType = getHeader("Content-Type");
+		if (contentType == null) return "text-html";
+		return contentType;
 	}
 
 	/* (non-Javadoc)
@@ -585,72 +620,80 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
 	 */
 	public String[] getParameterValues(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> values = this.queryParams.get(arg0);
+		if (values == null) return null;
+		return (String[]) values.toArray();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getParameterMap()
 	 */
 	public Map getParameterMap() {
-		// TODO Auto-generated method stub
-		return null;
+		HashMap<String, String[]> res = new HashMap<String, String[]>();
+		for (String str: this.queryParams.keySet()) {
+			String[] values = getParameterValues(str);
+			res.put(str, values);
+		}
+		return res;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getProtocol()
 	 */
 	public String getProtocol() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.protocolAndVersion;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getScheme()
 	 */
 	public String getScheme() {
-		// TODO Auto-generated method stub
-		return null;
+		return "http";
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getServerName()
 	 */
 	public String getServerName() {
-		// TODO Auto-generated method stub
-		return null;
+		String hostString = getHeader("Host");
+		if (hostString == null) return null;
+		String serverName = hostString.split(":")[0];
+		return serverName;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getServerPort()
 	 */
 	public int getServerPort() {
-		// TODO Auto-generated method stub
-		return 0;
+		String hostString = getHeader("Host");
+		if (hostString == null) return -1;
+		String serverPort = hostString.split(":")[1];
+		return Integer.parseInt(serverPort);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getReader()
 	 */
 	public BufferedReader getReader() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		StringReader sr = new StringReader(this.postBody);
+		BufferedReader br= new BufferedReader(sr);
+    	return br;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getRemoteAddr()
 	 */
 	public String getRemoteAddr() {
-		// TODO Auto-generated method stub
-		return null;
+		String remoteAddr = getHeader("Remote-Addr");
+		return remoteAddr;
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getRemoteHost()
 	 */
 	public String getRemoteHost() {
-		// TODO Auto-generated method stub
-		return null;
+		String remoteAddr = getHeader("Remote-Host");
+		return remoteAddr;
 	}
 
 	/* (non-Javadoc)
@@ -664,15 +707,13 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#removeAttribute(java.lang.String)
 	 */
 	public void removeAttribute(String arg0) {
-		// TODO Auto-generated method stub
-
+		this.m_props.remove(arg0);
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getLocale()
 	 */
 	public Locale getLocale() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -687,7 +728,6 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#isSecure()
 	 */
 	public boolean isSecure() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -702,7 +742,6 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
 	 */
 	public String getRealPath(String arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -710,32 +749,28 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getRemotePort()
 	 */
 	public int getRemotePort() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.curSocket.getPort();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getLocalName()
 	 */
 	public String getLocalName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.curSocket.getLocalAddress().getHostName();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getLocalAddr()
 	 */
 	public String getLocalAddr() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.curSocket.getLocalAddress().getHostAddress();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getLocalPort()
 	 */
 	public int getLocalPort() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.curSocket.getLocalPort();
 	}
 
 	public void setMethod(String method) {

@@ -10,15 +10,13 @@ public class InitParamServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-//		System.out.println(this.);
-		
 		ServletConfig config = getServletConfig();
 		ServletContext context = config.getServletContext();
 		out.println("<HTML><HEAD><TITLE>Simple Servlet</TITLE></HEAD><BODY>");
 		out.println("<P>The value of 'webmaster' is: " + 
 				context.getInitParameter("webmaster") + "</P>");
-//		out.println("<P>The value of 'TestParam' is: " + 
-//				config.getInitParameter("TestParam") + "</P>");
+		out.println("<P>The value of 'TestParam' is: " + 
+				config.getInitParameter("TestParam") + "</P>");
 		out.println("</BODY></HTML>");		
 	}
 }

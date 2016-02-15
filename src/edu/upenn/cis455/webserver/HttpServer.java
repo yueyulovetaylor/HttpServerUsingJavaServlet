@@ -1,6 +1,6 @@
 package edu.upenn.cis455.webserver;
 
-class HttpServer {
+public class HttpServer {
 	public static void main(String args[]) throws Exception {
 		// There are two quick return situations here: 
 		// 1. if no commands parsed in, print full name and SEAS login name; 

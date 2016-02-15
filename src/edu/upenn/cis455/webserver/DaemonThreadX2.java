@@ -19,6 +19,8 @@ import edu.upenn.cis455.ServletUtility.TestHarness.Handler;
  */
 
 public class DaemonThreadX2 extends Thread {
+	public static int portNumber;
+	
 	String directory;
 	ServerSocket server;
 	SingleThreadHandlerX2 [] threadPoolList;	
@@ -38,6 +40,8 @@ public class DaemonThreadX2 extends Thread {
 		System.out.println("-- DeamonThread.DaemonThread() " + inputPortNumber + " Entering");
 		
 		// Initiation the server and directory as what is parsed in
+		this.portNumber = inputPortNumber;
+		
 		this.directory = inputDirectory;
 		try {
 			server = new ServerSocket(inputPortNumber);
@@ -65,8 +69,9 @@ public class DaemonThreadX2 extends Thread {
 			throw e;
 		}
 		
-		this.curServelets = TestHarness.createServlets(curHandler, curServletContext);
 		this.curServletContext = TestHarness.createContext(curHandler);
+		this.curServelets = TestHarness.createServlets(curHandler, curServletContext);
+		
 		this.curServletSessionContainer = new SessionContainer();
 		SessionContainer.SessionID = 0;				// Reset sessionID when create daemon thread
 		

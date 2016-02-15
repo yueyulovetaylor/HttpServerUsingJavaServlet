@@ -168,26 +168,50 @@ public class ResponseHandlerX2 {
 		int idxOfQMark = this.curURL.indexOf('?');
 		if (idxOfQMark == -1) {
 			// Query not exists
-			curURLWithoutField = this.curURL.substring(1);
+			curURLWithoutField = this.curURL;
 		}
 		else {
-			curURLWithoutField = this.curURL.substring(1, idxOfQMark);
+			curURLWithoutField = this.curURL.substring(0, idxOfQMark);
+		}
+		
+		// /* wildcard matching situation: reference: 
+		// https://support.google.com/customsearch/answer/71826?hl=en
+		boolean bWildcard = false;
+		String URLIfWC = null;
+		for (String url : this.curHandler.m_urlPatterns.keySet()) {
+			if (url.endsWith("/*")) {
+				// Potentially Wildcard matching
+				String urlWithoutWC = url.substring(0, url.length() - 2);
+				if (curURLWithoutField.equals(urlWithoutWC) || 
+					curURLWithoutField.contains(urlWithoutWC + '/')) {
+					// Matched
+					System.out.println("---- ResponseHandler:processHttpRequest() URL wildcard matching!");
+					bWildcard = true;
+					URLIfWC = urlWithoutWC + "/*";
+				}
+			}
 		}
 		
 		System.out.println("---- ResponseHandler:processHttpRequest() URL: " + curURLWithoutField);
 		
-		if (this.curHandler.m_urlPatterns.containsKey(curURLWithoutField)) {
+		if (this.curHandler.m_urlPatterns.containsKey(curURLWithoutField) || bWildcard) {
 			System.out.println("---- ResponseHandler:processHttpRequest(): " +
 							   "handle request and response if found in servlet");
 			String servletName = this.curHandler.m_urlPatterns.get(curURLWithoutField);
-			System.out.println(servletName);
+			String pathInfo = null;
 			
-			// TODO: Something need to be done here, later
+			// URL if WC, get it's servlet name
+			if (bWildcard && servletName == null) {
+				servletName = this.curHandler.m_urlPatterns.get(URLIfWC);
+				pathInfo = curURLWithoutField.substring(URLIfWC.length() - 2);
+			}
+			
+			System.out.println(servletName);
 			
 			// Get the Servlet and Request and Response class
 			System.out.println(this.curServelets.toString());
 			
-			FakeRequest toRequest = new FakeRequest(this.curSocket, this.in, 
+			FakeRequest toRequest = new FakeRequest(pathInfo, this.curSocket, this.in, 
 									httpRequest, this.curServletSessionContainer);
 			FakeResponse toResponse = new FakeResponse(this.dataOutStream, toRequest);
 			
