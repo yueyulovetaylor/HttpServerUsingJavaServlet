@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 public class WildcardMatchingServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("----- BusyServlet:Service(DOGET)(): Entering");
+//		System.out.println("----- BusyServlet:Service(DOGET)(): Entering");
 		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -19,6 +19,6 @@ public class WildcardMatchingServlet extends HttpServlet {
 		out.println("<h1>This is a wildcard matching test page. Welcom and well done!</h1>");
 		out.println("<p>Get pathinfo: " + request.getPathInfo() + "</p>");
 		out.println("</BODY></HTML>\n");
-		System.out.println("----- BusyServlet:Service(DOGET)(): Exiting");
+//		System.out.println("----- BusyServlet:Service(DOGET)(): Exiting");
 	}
 }

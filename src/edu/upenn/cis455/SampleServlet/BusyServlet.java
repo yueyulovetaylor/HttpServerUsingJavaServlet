@@ -11,7 +11,7 @@ import java.io.*;
 public class BusyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("----- BusyServlet:Service(DOGET)(): Entering");
+//		System.out.println("----- BusyServlet:Service(DOGET)(): Entering");
 		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -23,6 +23,6 @@ public class BusyServlet extends HttpServlet {
 		}
 		out.println("<P>Done!</P>");
 		out.println("</BODY></HTML>\n");
-		System.out.println("----- BusyServlet:Service(DOGET)(): Exiting");
+//		System.out.println("----- BusyServlet:Service(DOGET)(): Exiting");
 	}
 }
