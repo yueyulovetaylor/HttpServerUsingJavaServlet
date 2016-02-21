@@ -29,7 +29,7 @@ public class TestHarness {
 			} 
 			
 			else if (qName.compareTo("init-param") == 0) {
-				System.out.println("--- TestHarness:handler.startElement: find_init_param");
+//				System.out.println("--- TestHarness:handler.startElement: find_init_param");
 				m_state = 4;
 			} 
 			
@@ -128,24 +128,24 @@ public class TestHarness {
 					System.exit(-1);
 				}
 				
-				System.out.println("--- TestHarness.handler.characters(): parse init_param into: " + this.m_servletName);
-				System.out.println(m_paramName + ": " + value);
-				System.out.println("Servlet name: " + this.m_servletName);
-				System.out.println("Servlet contains: " + this.m_servletParams.entrySet());
+//				System.out.println("--- TestHarness.handler.characters(): parse init_param into: " + this.m_servletName);
+//				System.out.println(m_paramName + ": " + value);
+//				System.out.println("Servlet name: " + this.m_servletName);
+//				System.out.println("Servlet contains: " + this.m_servletParams.entrySet());
 
 				if (this.m_servletParams.containsKey(this.m_servletName)) {
-					System.out.println("--- TestHarness.handler.characters(): putin HashMap: " + m_paramName);
+//					System.out.println("--- TestHarness.handler.characters(): putin HashMap: " + m_paramName);
 					this.m_servletParams.get(this.m_servletName).put(m_paramName, value);
 				}
 				
 				else {
-					System.out.println("--- TestHarness.handler.characters(): initiate HashMap: " + m_paramName);
+//					System.out.println("--- TestHarness.handler.characters(): initiate HashMap: " + m_paramName);
 					HashMap<String,String> curInitParam = new HashMap<String,String>();
 					curInitParam.put(m_paramName, value);
 					this.m_servletParams.put(this.m_servletName, curInitParam);
 				}
 				
-				System.out.println("After insertion: Servlet contains: " + this.m_servletParams.entrySet());
+//				System.out.println("After insertion: Servlet contains: " + this.m_servletParams.entrySet());
 				
 //				FakeContext fContext = new FakeContext();
 //				fContext.setAttribute(m_paramName, value);
@@ -172,7 +172,7 @@ public class TestHarness {
 	}
 		
 	public static Handler parseWebdotxml(String webdotxml) throws Exception { 
-		System.out.println("--- TestHarness.parseWebdotxml(): Entering");
+//		System.out.println("--- TestHarness.parseWebdotxml(): Entering");
 		
 		Handler h = new Handler();
 		File file = new File(webdotxml);
@@ -183,24 +183,24 @@ public class TestHarness {
 		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 		parser.parse(file, h);
 		
-		System.out.println("--- TestHarness.parseWebdotxml(): Exiting");
+//		System.out.println("--- TestHarness.parseWebdotxml(): Exiting");
 		return h;
 	}
 	
 	public static FakeContext createContext(Handler h) {
 		FakeContext fc = new FakeContext();
 		
-		System.out.println("--- TestHarness.createContext() contextParams: " + h.m_contextParams.entrySet());
+//		System.out.println("--- TestHarness.createContext() contextParams: " + h.m_contextParams.entrySet());
 		
 		for (String param : h.m_contextParams.keySet()) {
-			System.out.println(param + ": " + h.m_contextParams.get(param));
+//			System.out.println(param + ": " + h.m_contextParams.get(param));
 			fc.setInitParam(param, h.m_contextParams.get(param));
 		}
 		return fc;
 	}
 	
 	public static HashMap<String,HttpServlet> createServlets(Handler h, FakeContext fc) throws Exception {
-		System.out.println("--- TestHarness.createServlets(): Entering");
+//		System.out.println("--- TestHarness.createServlets(): Entering");
 		HashMap<String,HttpServlet> servlets = new HashMap<String,HttpServlet>();
 		for (String servletName : h.m_servlets.keySet()) {
 			FakeConfig config = new FakeConfig(servletName, fc);
@@ -213,7 +213,7 @@ public class TestHarness {
 			
 			if (servletParams != null) {
 				for (String param : servletParams.keySet()) {
-					System.out.println("Set parameters: " + param);
+//					System.out.println("Set parameters: " + param);
 					config.setInitParam(param, servletParams.get(param));
 				}
 			}
@@ -226,7 +226,7 @@ public class TestHarness {
 			servlets.put(servletName, servlet);
 		}
 		
-		System.out.println("--- TestHarness.createServlets(): Exiting");
+//		System.out.println("--- TestHarness.createServlets(): Exiting");
 		return servlets;
 	}
 

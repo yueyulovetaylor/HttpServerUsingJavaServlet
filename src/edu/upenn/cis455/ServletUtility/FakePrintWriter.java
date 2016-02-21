@@ -14,12 +14,12 @@ public class FakePrintWriter extends PrintWriter {
 	DataOutputStream curOut;
 	public int curBufferSize;
 //	byte[] outputByteBuffer;
-	boolean bHeaderWritten;
+	public boolean bHeaderWritten;
 //	StringBuilder bodyBuffer = new StringBuilder();
 	
 	// Since we have flushbuffer here, so we will be needing Buffer
 	// Here we set buffer as char
-	char[] buffer = new char[BUFFER_MAX_SIZE];
+	public char[] buffer = new char[BUFFER_MAX_SIZE];
 	FakeResponse curFR;
 	public boolean bCommited;
 	
@@ -36,18 +36,18 @@ public class FakePrintWriter extends PrintWriter {
 	}
 
 	/*
-	 * Save 
+	 * Save inputStr to buffer, if full flushbuffer
 	 */
 	@Override
 	public void println(String inputStr) {
-		System.out.println("----- FakePrintWriter:println(): Entering");
+//		System.out.println("----- FakePrintWriter:println(): Entering");
 		
 		// Chrome content-length dismatch, probably need to dynamically adjust content-length 
 		// and update header.
 		
 		// Write header if didn't write
 		if (!bHeaderWritten) {
-			System.out.println("----- FakePrintWriter:println(): Write header");
+//			System.out.println("----- FakePrintWriter:println(): Write header");
 			String header = this.curFR.createResponseHeader();
 			byte[] headerB = header.getBytes(StandardCharsets.UTF_8);
 			
@@ -56,7 +56,7 @@ public class FakePrintWriter extends PrintWriter {
 			} 
 			
 			catch (IOException e) {
-				System.out.println("----- FakePrintWriter:println(): Unable to write header");
+//				System.out.println("----- FakePrintWriter:println(): Unable to write header");
 				e.printStackTrace();
 			}
 			
@@ -92,7 +92,7 @@ public class FakePrintWriter extends PrintWriter {
 			this.flushBuffer();
 		}
 		
-		System.out.println("----- FakePrintWriter:println(): Exiting");
+//		System.out.println("----- FakePrintWriter:println(): Exiting");
 	}
 	
 	/*
@@ -107,7 +107,7 @@ public class FakePrintWriter extends PrintWriter {
 		} 
 		
 		catch (IOException e) {
-			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
+//			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
 			e.printStackTrace();
 		}
 		
@@ -148,6 +148,13 @@ public class FakePrintWriter extends PrintWriter {
 		this.buffer = new char[this.BUFFER_MAX_SIZE];
 		this.curBufferSize = 0;
 		this.bCommited = true;
+	}
+	
+	/*
+	 * Get buffer size
+	 */
+	public int getBufferSize() {
+		return this.BUFFER_MAX_SIZE;
 	}
 	
 }

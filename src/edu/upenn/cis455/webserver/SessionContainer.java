@@ -21,7 +21,7 @@ public class SessionContainer {
 		this.SessionID++;
 		FakeSession curFS = new FakeSession(this.SessionID);
 		SessionMap.put(this.SessionID, curFS);
-		System.out.println("-- SessionContainer.startNewSeesion(): New Session: " + this.SessionID + " Added");
+//		System.out.println("-- SessionContainer.startNewSeesion(): New Session: " + this.SessionID + " Added");
 		return curFS;
 	}
 }

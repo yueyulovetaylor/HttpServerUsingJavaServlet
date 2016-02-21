@@ -166,8 +166,12 @@ public class FakeSession implements HttpSession {
 		return false;
 	}
 
-	boolean isValid() {
+	public boolean isValid() {
 		return m_valid;
+	}
+	
+	public int getPropertiesSize() {
+		return this.m_props.size();
 	}
 	
 	private Properties m_props = new Properties();

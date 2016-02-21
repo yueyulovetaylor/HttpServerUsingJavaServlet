@@ -66,7 +66,7 @@ public class FakeRequest implements HttpServletRequest {
 	 */
 	public FakeRequest(String inputPathInfo, Socket inputSocket, BufferedReader inputIn, 
 					   String inputCurLine1, SessionContainer inputSC) {
-		System.out.println("----- FakeRequest:FakeRequest() Entering");
+//		System.out.println("----- FakeRequest:FakeRequest() Entering");
 		
 		this.curSocket = inputSocket;
 		this.curIn = inputIn;
@@ -88,24 +88,24 @@ public class FakeRequest implements HttpServletRequest {
 		// In case there are cookies, get the cookies out, and check if there's any 
 		// Session information stored in the cookie, if so, get the Session Object out
 		Cookie[] cookieList = this.getCookies();
-		System.out.println("----- FakeRequest:FakeRequest() To print cookie");
+//		System.out.println("----- FakeRequest:FakeRequest() To print cookie");
 		if (cookieList != null) {
 			for (int i = 0; i < cookieList.length; i++) {
-				System.out.println(cookieList[i]);
+//				System.out.println(cookieList[i]);
 				if (cookieList[i].getName().equals("SessionID")) {
-					System.out.println(cookieList[i].getValue());
+//					System.out.println(cookieList[i].getValue());
 					this.sessionID = cookieList[i].getValue();
 					break;
 				}
 			}
 		}
 		
-		System.out.println("----- FakeRequest:FakeRequest() SessionID: " + this.sessionID);
+//		System.out.println("----- FakeRequest:FakeRequest() SessionID: " + this.sessionID);
 		
 		if (!sessionID.equals("-1")) {
-			System.out.println(this.curSessionContainer.SessionMap);
+//			System.out.println(this.curSessionContainer.SessionMap);
 			this.m_session = this.curSessionContainer.SessionMap.get(Integer.parseInt(this.sessionID));
-			System.out.println(m_session);
+//			System.out.println(m_session);
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class FakeRequest implements HttpServletRequest {
 		}
 		
 		catch (Exception e) {
-			System.out.println("----- FakeRequest:decodeLine1() Unable to decode, throw an exception");
+//			System.out.println("----- FakeRequest:decodeLine1() Unable to decode, throw an exception");
 			throw e;
 		}
 		
@@ -147,7 +147,7 @@ public class FakeRequest implements HttpServletRequest {
 	 * read the post info (additional params) into QueriesParam HashMap
 	 */
 	void getSecondLine() throws IOException {
-		System.out.println("----- FakeRequest:getSecondLine() Entering");
+//		System.out.println("----- FakeRequest:getSecondLine() Entering");
 		
 		String line2 = this.curIn.readLine();
 		while (!line2.equals("")) {
@@ -159,7 +159,7 @@ public class FakeRequest implements HttpServletRequest {
 		// If here, we have the "POST" command, we need to parse out the 
 		// content length 
 		if (this.command.equals("POST")) {
-			System.out.println("----- FakeRequest:getSecondLine(): Get Post Params");
+//			System.out.println("----- FakeRequest:getSecondLine(): Get Post Params");
 			String contentLengthStr = this.getHeader("Content-Length");
 			int contentLength = 0;
 			if (contentLengthStr != null) {
@@ -176,18 +176,18 @@ public class FakeRequest implements HttpServletRequest {
 			this.postBody = paramSB.toString();
 			this.loadQueriesParams(this.postBody);
 			
-			System.out.println("----- FakeRequest:getSecondLine(): After post, print QueriesParam");
-			System.out.println(this.queryParams.toString());
+//			System.out.println("----- FakeRequest:getSecondLine(): After post, print QueriesParam");
+//			System.out.println(this.queryParams.toString());
 		}
 		
-		System.out.println("----- FakeRequest:getSecondLine(): Exiting");
+//		System.out.println("----- FakeRequest:getSecondLine(): Exiting");
 	}
 	
 	/*
 	 * Load queries into hash map queryItems
 	 */
 	void loadQueriesParams(String query) {
-		System.out.println("----- FakeRequest:loadQueriesParams() Entering");
+//		System.out.println("----- FakeRequest:loadQueriesParams() Entering");
 		
 		// In order to avoid unnecessary exception, decode query to UTF-8
 		try {
@@ -195,7 +195,7 @@ public class FakeRequest implements HttpServletRequest {
 		} 
 		
 		catch (UnsupportedEncodingException e) {
-			System.out.println("----- FakeRequest:loadQueries(): UTF-8 Decoding fails");
+//			System.out.println("----- FakeRequest:loadQueries(): UTF-8 Decoding fails");
 		}
 		
 		// Split the query string and parse into hash map
@@ -208,7 +208,7 @@ public class FakeRequest implements HttpServletRequest {
 			
 			if (this.queryParams.containsKey(key)) {
 				// Shouldn't be here, continue
-				System.out.println("----- FakeRequest:loadQueries(): Duplicate key: " + key);
+//				System.out.println("----- FakeRequest:loadQueries(): Duplicate key: " + key);
 				this.queryParams.get(key).add(value);
 			}
 			else {
@@ -217,14 +217,14 @@ public class FakeRequest implements HttpServletRequest {
 			}
 		}
 		
-		System.out.println("----- FakeRequest:loadQueriesParams() Exiting");
+//		System.out.println("----- FakeRequest:loadQueriesParams() Exiting");
 	}
 	
 	/*
 	 * Load queries into HashMap headerItems
 	 */
 	void loadLine2(String line2) {
-		System.out.println("----- FakeRequest:loadLine2() Entering");
+//		System.out.println("----- FakeRequest:loadLine2() Entering");
 		
 		int idxOfColon = line2.indexOf(':');
 		
@@ -237,9 +237,9 @@ public class FakeRequest implements HttpServletRequest {
 		}
 		
 		this.headerItems.get(action).add(content);
-		System.out.println(this.headerItems.toString());
+//		System.out.println(this.headerItems.toString());
 		
-		System.out.println("----- FakeRequest:loadLine2() Exiting");
+//		System.out.println("----- FakeRequest:loadLine2() Exiting");
 	}
 	
 	/* 
@@ -253,12 +253,12 @@ public class FakeRequest implements HttpServletRequest {
 	 * Get all cookie object out of the HTTP request
 	 */
 	public Cookie[] getCookies() {
-		System.out.println("----- FakeRequest:getCookies() Entering");
+//		System.out.println("----- FakeRequest:getCookies() Entering");
 		Enumeration<String> cookiesEnum = this.getHeaders("Cookie");
 		
 		// Quick check and return 
 		if (cookiesEnum == null || !cookiesEnum.hasMoreElements()) {
-			System.out.println("----- FakeRequest:getCookies() Return null");
+//			System.out.println("----- FakeRequest:getCookies() Return null");
 			return new Cookie[0];
 		}
 		
@@ -268,7 +268,7 @@ public class FakeRequest implements HttpServletRequest {
 		while (cookiesEnum.hasMoreElements()) {
 			// Get all cookies out and parse into Cookie object
 			String curCookieStr = cookiesEnum.nextElement();
-			System.out.println("----- FakeRequest:getCookies() curCookie: " + curCookieStr);
+//			System.out.println("----- FakeRequest:getCookies() curCookie: " + curCookieStr);
 			int idxOfDelim = curCookieStr.indexOf(';');		// -1 represents for single cookie
 			
 			if (idxOfDelim == -1) {
@@ -280,20 +280,24 @@ public class FakeRequest implements HttpServletRequest {
 			}
 			
 			else {
+//				System.out.println("----- FakeRequest:getCookies(): " + curCookieStr);
 				String[] cookieSplits = curCookieStr.split(";");
+//				System.out.println("----- FakeRequest:getCookies(): cookie splits: " + cookieSplits.length);
 				for (int nCt = 0; nCt < cookieSplits.length; nCt++) {
 					String curCookieItemStr = cookieSplits[nCt].trim();
 					int idxOfKeyValueSep = curCookieStr.indexOf('=');
-					curName = curCookieStr.substring(0, idxOfKeyValueSep);
-					curVal = curCookieStr.substring(idxOfKeyValueSep + 1);
+					curName = cookieSplits[nCt].substring(0, idxOfKeyValueSep).trim();
+					curVal = cookieSplits[nCt].substring(idxOfKeyValueSep + 1).trim();
 					Cookie toAdd = new Cookie(curName, curVal);
 					CookieArr.add(toAdd);
 				}
+				
+//				System.out.println(CookieArr.toString());
 			}
 		}
 		
-		System.out.println("----- FakeRequest:getCookies() Print Cookies: ");
-		System.out.println(CookieArr.get(0).getName());
+//		System.out.println("----- FakeRequest:getCookies() Print Cookies: ");
+//		System.out.println(CookieArr.get(0).getName());
 		
 		// Parse ArrayList to []
 		Cookie[] toReturn = new Cookie[CookieArr.size()];
@@ -301,7 +305,7 @@ public class FakeRequest implements HttpServletRequest {
 			toReturn[i] = CookieArr.get(i);
 		}
 		
-		System.out.println("----- FakeRequest:getCookies() Exiting");
+//		System.out.println("----- FakeRequest:getCookies() Exiting");
 		return toReturn;
 	}
 
@@ -488,7 +492,7 @@ public class FakeRequest implements HttpServletRequest {
 	 * If create is false and the request has no valid HttpSession, this method returns null.
 	 */
 	public HttpSession getSession(boolean arg0) {
-		System.out.println("----- FakeRequest:getSession() Entering");
+//		System.out.println("----- FakeRequest:getSession() Entering");
 		if (arg0) {
 			if (! hasSession()) {
 				m_session = this.curSessionContainer.startNewSeesion();
@@ -510,7 +514,7 @@ public class FakeRequest implements HttpServletRequest {
 	 */
 	public HttpSession getSession() {
 		if (this.m_session == null) {
-			System.out.println("----- FakeRequest:getSession() m_session is null");
+//			System.out.println("----- FakeRequest:getSession() m_session is null");
 			return getSession(true);
 		}
 		
@@ -787,7 +791,7 @@ public class FakeRequest implements HttpServletRequest {
 	
 	public boolean hasSession() {
 		if (m_session != null) {
-			System.out.println("----- FakeRequest:hasSession(): " + this.m_session == null);
+//			System.out.println("----- FakeRequest:hasSession(): " + this.m_session == null);
 		}
 		return ((m_session != null) && m_session.isValid());
 	}

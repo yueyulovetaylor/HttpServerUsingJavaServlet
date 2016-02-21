@@ -52,7 +52,7 @@ public class SingleThreadHandlerX2 extends Thread {
 							   
 							   int inputThreadNumber) {
 		this.threadNumber = inputThreadNumber;
-		System.out.println("--- SingleThreadHandler:SingleThreadHandler() Entering: thread No." + this.threadNumber);
+//		System.out.println("--- SingleThreadHandler:SingleThreadHandler() Entering: thread No." + this.threadNumber);
 		
 		this.directory = inputDirectory;
 		this.socketQueue = inputSocketQueue;
@@ -67,18 +67,18 @@ public class SingleThreadHandlerX2 extends Thread {
 		this.curServletSessionContainer = inputServletSessionContainer;
 		this.curServletContext = inputServletContext;
 		
-		System.out.println("--- SingleThreadHandler:SingleThreadHandler() Exiting: thread No." + this.threadNumber);
+//		System.out.println("--- SingleThreadHandler:SingleThreadHandler() Exiting: thread No." + this.threadNumber);
 	}
 	
 	public void run() {
-		System.out.println("--- SingleThreadHandler:run() Entering: thread No." + this.threadNumber);	
+//		System.out.println("--- SingleThreadHandler:run() Entering: thread No." + this.threadNumber);	
 		
 		while (isRunning) {
 			try {
 				// Get one socket from the queue and parse into the lower level classes
 				toParse = ReadSocketFromQueue();
 				if (toParse == null) {
-					System.out.println("--- SingleThreadHandler:run() Error: No Socket read from the queue thread No." + this.threadNumber);	
+//					System.out.println("--- SingleThreadHandler:run() Error: No Socket read from the queue thread No." + this.threadNumber);	
 					return;
 				}
 				
@@ -111,18 +111,18 @@ public class SingleThreadHandlerX2 extends Thread {
 			} 
 			
 			catch (InterruptedException | IOException e) {
-				System.out.println("--- SingleThreadHandler:run() Error1: ReadSocketFromQueue Error thread No." + this.threadNumber);
+//				System.out.println("--- SingleThreadHandler:run() Error1: ReadSocketFromQueue Error thread No." + this.threadNumber);
 				e.printStackTrace();
 				return;
 			} 
 			
 			catch (ServletException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} 
 			
 /*			catch (IOException e) {
-				// TODO Auto-generated catch block
+				// Auto-generated catch block
 				e.printStackTrace();
 			}*/
 			
@@ -131,7 +131,7 @@ public class SingleThreadHandlerX2 extends Thread {
 					try {
 						toParse.close();
 					} catch (IOException e) {
-						System.out.println("--- SingleThreadHandler:run() Error: Unable to close socket thread No." + this.threadNumber);
+//						System.out.println("--- SingleThreadHandler:run() Error: Unable to close socket thread No." + this.threadNumber);
 						e.printStackTrace();
 					}
 				}
@@ -142,14 +142,14 @@ public class SingleThreadHandlerX2 extends Thread {
 	
 	public Socket ReadSocketFromQueue() throws InterruptedException {
 		synchronized (socketQueue) {
-			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Entering");
+//			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Entering");
 			// Synchronized socketQueue first before pop anything out of it
-			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() thread No.:" + this.threadNumber + " Queue empty?" + socketQueue.isEmpty());
+//			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() thread No.:" + this.threadNumber + " Queue empty?" + socketQueue.isEmpty());
 			while (socketQueue.isEmpty() && this.isRunning) {
-				System.out.println(socketQueue.toString());
+//				System.out.println(socketQueue.toString());
 				if (!this.isRunning) return null;
 				// Just wait until something get into the socket
-				System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Queue waiting Thread No." + this.threadNumber);
+//				System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Queue waiting Thread No." + this.threadNumber);
 				socketQueue.wait();	
 			}
 			
@@ -157,7 +157,7 @@ public class SingleThreadHandlerX2 extends Thread {
 			// before return the retrieved socket
 			Socket toReturn = socketQueue.poll();
 			
-			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Exiting");
+//			System.out.println("--- SingleThreadHandler:ReadSocketFromQueue() Exiting");
 			socketQueue.notifyAll();
 			return toReturn;	
 		}

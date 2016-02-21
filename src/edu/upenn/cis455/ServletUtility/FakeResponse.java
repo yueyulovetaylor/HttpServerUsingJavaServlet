@@ -41,7 +41,7 @@ public class FakeResponse implements HttpServletResponse {
 	FakePrintWriter fPW;
 	
 	public FakeResponse(DataOutputStream inputDataOutStream, FakeRequest inputFR) {
-		System.out.println("----- FakeResponse:FakeResponse(): Entering");
+//		System.out.println("----- FakeResponse:FakeResponse(): Entering");
 		
 		this.curDataOutStream = inputDataOutStream;
 		this.statusCode = 200;
@@ -55,15 +55,15 @@ public class FakeResponse implements HttpServletResponse {
 		this.curFR = inputFR;
 		this.fPW = new FakePrintWriter(this.curDataOutStream, this);
 		
-		System.out.println("----- FakeResponse:FakeResponse(): Exiting");
+//		System.out.println("----- FakeResponse:FakeResponse(): Exiting");
 	}
 	
 	public String createResponseHeader() {
 		
 		// Check if there is session existing in Request, if so add it to Cookie
 		if (this.curFR.hasSession()) {
-			System.out.println("----- FakeResponse:createResponseHeader(): Find Cookie!");
-			System.out.println(this.curFR.curSessionContainer.SessionMap);
+//			System.out.println("----- FakeResponse:createResponseHeader(): Find Cookie!");
+//			System.out.println(this.curFR.curSessionContainer.SessionMap);
 			FakeSession toParseIntoCookie = (FakeSession) this.curFR.getSession(false);
 			String sessionID = toParseIntoCookie.getId();
 			Cookie sessionIDCookie = new Cookie("SessionID", sessionID);
@@ -188,20 +188,20 @@ public class FakeResponse implements HttpServletResponse {
 	 * Add input cookie to header
 	 */
 	public void addCookie(Cookie arg0) {
-		System.out.println("----- FakeResponse:FakeResponse(): Add cookie: " 
-					+ arg0.getName() + " MaxAge: " + arg0.getMaxAge());
+//		System.out.println("----- FakeResponse:FakeResponse(): Add cookie: " 
+//					+ arg0.getName() + " MaxAge: " + arg0.getMaxAge());
 		
 		String cookieStr = arg0.getName() + "=" + arg0.getValue();
 		
 		if (arg0.getMaxAge() != -1) {
 			// Cookie has expiry time
 			Long expiryTime = System.currentTimeMillis() + arg0.getMaxAge() * 1000;
-			System.out.println("----- FakeResponse:FakeResponse(): MaxAge: " + arg0.getMaxAge());
+//			System.out.println("----- FakeResponse:FakeResponse(): MaxAge: " + arg0.getMaxAge());
 			String expiryTimeStr = this.dateLong2Str(expiryTime);
 			cookieStr += "; Expires=" + expiryTimeStr;
 		}
 		
-		System.out.println("----- FakeResponse:FakeResponse(): content: " + cookieStr);
+//		System.out.println("----- FakeResponse:FakeResponse(): content: " + cookieStr);
 			
 		if (this.headerHash.containsKey("Set-Cookie")) {
 			this.headerHash.get("Set-Cookie").add(cookieStr);
@@ -270,7 +270,7 @@ public class FakeResponse implements HttpServletResponse {
 		} 
 		
 		catch (IOException e) {
-			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
+//			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
 			e.printStackTrace();
 		}
 	}
@@ -298,7 +298,7 @@ public class FakeResponse implements HttpServletResponse {
 		} 
 		
 		catch (IOException e) {
-			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
+//			System.out.println("----- FakePrintWriter:flushBuffer(): Cannot write to Out: Bad Exiting");
 			e.printStackTrace();
 		}
 	}

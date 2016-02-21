@@ -92,7 +92,7 @@ public class ResponseHandlerX2 {
 						   // Update ends here
 					       ) throws IOException {
 		this.threadNumber = inputThreadNumber;
-		System.out.println("---- ResponseHandler:ResponseHandler() Entering: Thread " + this.threadNumber);
+//		System.out.println("---- ResponseHandler:ResponseHandler() Entering: Thread " + this.threadNumber);
 		
 		this.curSocket = inputSocket;
 		this.curThreadPoolList = inputThreadPoolList;
@@ -116,11 +116,11 @@ public class ResponseHandlerX2 {
 		this.isIfModified = false;
 		this.isIfUnmodified = false;
 		
-		System.out.println("---- ResponseHandler:ResponseHandler() Entering: Thread " + this.threadNumber);
+//		System.out.println("---- ResponseHandler:ResponseHandler() Entering: Thread " + this.threadNumber);
 	}
 	
 	public void processHttpRequest() throws IOException, ServletException {
-		System.out.println("---- ResponseHandler:processHttpRequest() Entering: Thread " + this.threadNumber);
+//		System.out.println("---- ResponseHandler:processHttpRequest() Entering: Thread " + this.threadNumber);
 		
 		// Get the Http Request from the client and split them into different parts: command,
 		// URL, Http version
@@ -146,7 +146,7 @@ public class ResponseHandlerX2 {
 			// Our Http server only needs to support GET and HEAD methods, all others are illegal
 			// It is a quick return situation, illegal method, 
 			// Put this string on the webpage will be fine "HTTP/1.x 501 Not Implemented"
-			System.out.println("---- ResponseHandler:processHttpRequest() Illegal method name: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Illegal method name: Thread " + this.threadNumber);
 			this.statusCodePhrase = "501 NOT IMPLEMENTED";
 			
 			String headerHTML = constructHtmlHeader(statusCodePhrase + ": UNDEFINED METHOD");
@@ -185,18 +185,18 @@ public class ResponseHandlerX2 {
 				if (curURLWithoutField.equals(urlWithoutWC) || 
 					curURLWithoutField.contains(urlWithoutWC + '/')) {
 					// Matched
-					System.out.println("---- ResponseHandler:processHttpRequest() URL wildcard matching!");
+//					System.out.println("---- ResponseHandler:processHttpRequest() URL wildcard matching!");
 					bWildcard = true;
 					URLIfWC = urlWithoutWC + "/*";
 				}
 			}
 		}
 		
-		System.out.println("---- ResponseHandler:processHttpRequest() URL: " + curURLWithoutField);
+//		System.out.println("---- ResponseHandler:processHttpRequest() URL: " + curURLWithoutField);
 		
 		if (this.curHandler.m_urlPatterns.containsKey(curURLWithoutField) || bWildcard) {
-			System.out.println("---- ResponseHandler:processHttpRequest(): " +
-							   "handle request and response if found in servlet");
+//			System.out.println("---- ResponseHandler:processHttpRequest(): " +
+//							   "handle request and response if found in servlet");
 			String servletName = this.curHandler.m_urlPatterns.get(curURLWithoutField);
 			String pathInfo = null;
 			
@@ -206,10 +206,10 @@ public class ResponseHandlerX2 {
 				pathInfo = curURLWithoutField.substring(URLIfWC.length() - 2);
 			}
 			
-			System.out.println(servletName);
+//			System.out.println(servletName);
 			
 			// Get the Servlet and Request and Response class
-			System.out.println(this.curServelets.toString());
+//			System.out.println(this.curServelets.toString());
 			
 			FakeRequest toRequest = new FakeRequest(pathInfo, this.curSocket, this.in, 
 									httpRequest, this.curServletSessionContainer);
@@ -225,7 +225,7 @@ public class ResponseHandlerX2 {
 			}
 			
 			catch (Exception e) {
-				System.out.println("---- ResponseHandler:processHttpRequest(): Cannot service");
+//				System.out.println("---- ResponseHandler:processHttpRequest(): Cannot service");
 				e.printStackTrace();
 			}
 			
@@ -238,12 +238,12 @@ public class ResponseHandlerX2 {
 		String hostModified;
 		while (!(hostModified = in.readLine()).equals("")) {
 			// There is a second line indicating hosting
-			System.out.println("---- ResponseHandler:processHttpRequest() readin: " + hostModified);
+//			System.out.println("---- ResponseHandler:processHttpRequest() readin: " + hostModified);
 			String[] hostModifiedSplits = hostModified.split("\\s+");
-			System.out.println("---- ResponseHandler:processHttpRequest() command: " + hostModifiedSplits[0]);
+//			System.out.println("---- ResponseHandler:processHttpRequest() command: " + hostModifiedSplits[0]);
 					
 			if (hostModifiedSplits[0].trim().equals("Host:")) {
-				System.out.println("---- ResponseHandler:processHttpRequest() HOSTED");
+//				System.out.println("---- ResponseHandler:processHttpRequest() HOSTED");
 				this.isHost = true;
 			}
 					
@@ -251,12 +251,12 @@ public class ResponseHandlerX2 {
 				  || hostModifiedSplits[0].trim().equals("If-Unmodified-Since:")) {
 				// Flip one of them
 				if (hostModifiedSplits[0].trim().equals("If-Modified-Since:")) {
-					System.out.println("---- ResponseHandler:processHttpRequest() MODIFIED");
+//					System.out.println("---- ResponseHandler:processHttpRequest() MODIFIED");
 					this.isIfModified = true;
 				}
 						
 				if (hostModifiedSplits[0].trim().equals("If-Unmodified-Since:")) {
-					System.out.println("---- ResponseHandler:processHttpRequest() UNMODIFIED");
+//					System.out.println("---- ResponseHandler:processHttpRequest() UNMODIFIED");
 					this.isIfUnmodified = true;
 				}
 						
@@ -268,7 +268,7 @@ public class ResponseHandlerX2 {
 				} 
 						
 				catch (ParseException e) {
-					System.out.println("---- ResponseHandler:processHttpRequest() Illegal (un)modified time format: Thread " + this.threadNumber);
+//					System.out.println("---- ResponseHandler:processHttpRequest() Illegal (un)modified time format: Thread " + this.threadNumber);
 					this.statusCodePhrase = "500 INTERNAL SERVER ERROR";
 							
 					String headerHTML = constructHtmlHeader(this.statusCodePhrase + ": ILLEGAL (UN)MODIFIED TIME FORMAT");
@@ -289,7 +289,7 @@ public class ResponseHandlerX2 {
 		// If http version is 1.1, but there is no header parsed in; it's a bad request
 		// Float.compare(f1, f2) return an integer, if positive, f1 > f2; if zero, f1 = f2; if negative, f1 < f2
 		if (Float.compare(httpVersionNo, (float) 1.1) == 0 && !this.isHost) {
-			System.out.println("---- ResponseHandler:processHttpRequest() HTTP1.1 require Host: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() HTTP1.1 require Host: Thread " + this.threadNumber);
 			this.statusCodePhrase = "400 BAD REQUEST";
 					
 			String headerHTML = constructHtmlHeader(this.statusCodePhrase + ": HTTP1.1 REQUIRE HOST");
@@ -308,7 +308,7 @@ public class ResponseHandlerX2 {
 		// If curURLWithoutField = "/shutdown"
 		if (curURLWithoutField.equals("shutdown")) {
 			this.toShutDown = true;
-			System.out.println("---- ResponseHandler:processHttpRequest(): to Shut Down server: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest(): to Shut Down server: Thread " + this.threadNumber);
 			this.statusCodePhrase = "200 OK";
 					
 			String headerHTML = constructHtmlHeader(this.statusCodePhrase + ": SHUT DOWN SERVER");
@@ -326,7 +326,7 @@ public class ResponseHandlerX2 {
 		
 		// If curURLWithoutField = "/control"
 		if (curURLWithoutField.equals("control")) {
-			System.out.println("---- ResponseHandler:processHttpRequest() to Show control");
+//			System.out.println("---- ResponseHandler:processHttpRequest() to Show control");
 			this.statusCodePhrase = "200 OK";
 					
 			// Construct name and seas login
@@ -360,15 +360,15 @@ public class ResponseHandlerX2 {
 		}
 		
 		// At this place, we need to open the directory to get all the files
-		System.out.println("---- ResponseHandler:processHttpRequest() Open directory/file: Thread " + this.threadNumber);
+//		System.out.println("---- ResponseHandler:processHttpRequest() Open directory/file: Thread " + this.threadNumber);
 		String completeURL = this.rootDirectory + this.curURL;
-		System.out.println("---- ResponseHandler:processHttpRequest() Open directory/file: " + completeURL + " in Thread " + this.threadNumber);
+//		System.out.println("---- ResponseHandler:processHttpRequest() Open directory/file: " + completeURL + " in Thread " + this.threadNumber);
 		Path curPaths = Paths.get(completeURL);
 		
 		// Verifying the Existence of a File or Directory
 		if (!Files.exists(curPaths)) {
 			// If curPaths does not exist, not found!
-			System.out.println("---- ResponseHandler:processHttpRequest() Path doesn't exist: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Path doesn't exist: Thread " + this.threadNumber);
 			this.statusCodePhrase = "404 NOT FOUND";
 					
 			String headerHTML = constructHtmlHeader(this.statusCodePhrase + ": ILLEGAL PATH");
@@ -390,7 +390,7 @@ public class ResponseHandlerX2 {
 		if (toCheckIfGetParentRoot.indexOf(this.rootDirectory) == -1) {
 			// If we cannot find rootDirectory inside toCheckIfGetParentRoot, which means 
 			// rootDirectory is not parent of toCheckIfGetParentRoot, Forbid to visit
-			System.out.println("---- ResponseHandler:processHttpRequest() Path is forbidden: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Path is forbidden: Thread " + this.threadNumber);
 			this.statusCodePhrase = "403 FORBIDDEN";
 			
 			String headerHTML = constructHtmlHeader(this.statusCodePhrase + ": CANNOT VISIT PARENT PATH");
@@ -411,7 +411,7 @@ public class ResponseHandlerX2 {
 			long fileLastModified = curFile.lastModified();
 			if (this.isIfModified && fileLastModified < this.lInputModifiedDate) {
 				// "IF-MODIFIED-SINCE" Situation: if no modified
-				System.out.println("---- ResponseHandler:processHttpRequest() isIfModified violation: Thread " + this.threadNumber);
+//				System.out.println("---- ResponseHandler:processHttpRequest() isIfModified violation: Thread " + this.threadNumber);
 				String isIfModifiedViolationResponse = 
 						"HTTP/1.1 304 Not MOdified \n" +
 						"Date: " + this.sInputModifiedDate + "\n";
@@ -422,7 +422,7 @@ public class ResponseHandlerX2 {
 			if (this.isIfUnmodified && fileLastModified > this.lInputModifiedDate) {
 				// "IF-UNMODIFIED-SINCE" Situation
 				// "IF-MODIFIED-SINCE" Situation: if no modified
-				System.out.println("---- ResponseHandler:processHttpRequest() isIfUnmodified violation: Thread " + this.threadNumber);
+//				System.out.println("---- ResponseHandler:processHttpRequest() isIfUnmodified violation: Thread " + this.threadNumber);
 				String isIfModifiedViolationResponse = 
 						"HTTP/1.1 412 Precondition Failed \n";
 				dataOutStream.writeBytes(isIfModifiedViolationResponse);
@@ -432,7 +432,7 @@ public class ResponseHandlerX2 {
 		
 		if (curFile.isDirectory()) {
 			// Directory output to web page (in firefox)
-			System.out.println("---- ResponseHandler:processHttpRequest() Output Directory: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Output Directory: Thread " + this.threadNumber);
 			
 			File[] fileList = curFile.listFiles();
 			StringBuilder sbDirectory = new StringBuilder();
@@ -472,7 +472,7 @@ public class ResponseHandlerX2 {
 				// Just do nothing with it
 			} 
 			
-			System.out.println("---- ResponseHandler:processHttpRequest() Exiting: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Exiting: Thread " + this.threadNumber);
 			return;
 		}
 		
@@ -509,7 +509,7 @@ public class ResponseHandlerX2 {
 			catch (Exception e) {
 				// Just do nothing with it
 			} 
-			System.out.println("---- ResponseHandler:processHttpRequest() Exiting: Thread " + this.threadNumber);
+//			System.out.println("---- ResponseHandler:processHttpRequest() Exiting: Thread " + this.threadNumber);
 			return;
 		}
 	}

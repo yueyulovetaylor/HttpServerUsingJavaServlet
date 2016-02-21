@@ -7,7 +7,7 @@ public class HttpServer {
 		// 2. if two or three commands, the first one is port to listen for 
 		// connection, and root directory of the static web pages; 
 		// 3. the directory of web.XML
-		System.out.println("- HttpServer.main() entering: num of args" + args.length);
+//		System.out.println("- HttpServer.main() entering: num of args" + args.length);
 		
 		if (args.length != 3) {
 			System.out.println("*** Author: Yue Yu (yueyu), exit!");
@@ -25,7 +25,7 @@ public class HttpServer {
 		try {
 			curDT.join();
 		} catch (InterruptedException e) {
-			System.out.println("HttpServer.main() Current Thread cannot be initiated.");
+//			System.out.println("HttpServer.main() Current Thread cannot be initiated.");
 			e.printStackTrace();
 		}
 	}
