@@ -140,6 +140,27 @@
       <!-- Load this servlet at server startup time -->
       <load-on-startup/>
     </servlet>
+    
+    <servlet>
+      <servlet-name>HeaderMethod</servlet-name>
+      <servlet-class>TestHeaderMethodServlet</servlet-class>
+      <!-- Load this servlet at server startup time -->
+      <load-on-startup/>
+    </servlet>
+    
+    <servlet>
+      <servlet-name>AddHeaderAfterWriting</servlet-name>
+      <servlet-class>AddHeaderAfterWriteServlet</servlet-class>
+      <!-- Load this servlet at server startup time -->
+      <load-on-startup/>
+    </servlet>
+    
+    <servlet>
+      <servlet-name>GetParam</servlet-name>
+      <servlet-class>GetParamServlet</servlet-class>
+      <!-- Load this servlet at server startup time -->
+      <load-on-startup/>
+    </servlet>
 
     <servlet-mapping>
       <servlet-name>demo</servlet-name>
@@ -184,6 +205,21 @@
     <servlet-mapping>
       <servlet-name>busy</servlet-name>
       <url-pattern>/busy</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>HeaderMethod</servlet-name>
+      <url-pattern>/hm</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>AddHeaderAfterWriting</servlet-name>
+      <url-pattern>/headerWrite</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>GetParam</servlet-name>
+      <url-pattern>/getParam</url-pattern>
     </servlet-mapping>
 
     <!-- Define the default session timeout for your application,

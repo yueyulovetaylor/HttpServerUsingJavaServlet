@@ -222,6 +222,7 @@ public class ResponseHandlerX2 {
 					toRequest.setMethod(command);
 				}
 				this.curServelets.get(servletName).service(toRequest, toResponse);
+				toResponse.flushBuffer();
 			}
 			
 			catch (Exception e) {

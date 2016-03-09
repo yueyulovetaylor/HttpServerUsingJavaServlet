@@ -204,7 +204,7 @@ public class FakeRequest implements HttpServletRequest {
 //			System.out.println("----- FakeRequest:loadQueries(): " + String.valueOf(i) + ": " + queryItems[i]);
 			int idxEqual = queryItems[i].indexOf('=');
 			String key = queryItems[i].substring(0, idxEqual);
-			String value = queryItems[i].substring(idxEqual) + 1;
+			String value = queryItems[i].substring(idxEqual + 1);
 			
 			if (this.queryParams.containsKey(key)) {
 				// Shouldn't be here, continue
@@ -610,14 +610,21 @@ public class FakeRequest implements HttpServletRequest {
 	 * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
 	 */
 	public String getParameter(String arg0) {
-		return m_params.getProperty(arg0);
+		if (!this.queryParams.containsKey(arg0)) {
+			return null;
+		}
+		else {
+//			System.out.println(this.queryParams.get(arg0).get(0));
+			return this.queryParams.get(arg0).get(0);
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletRequest#getParameterNames()
 	 */
-	public Enumeration getParameterNames() {
-		return m_params.keys();
+	public Enumeration<String> getParameterNames() {
+		Enumeration<String> enumeration = Collections.enumeration(this.queryParams.keySet());
+		return enumeration;
 	}
 
 	/* (non-Javadoc)
@@ -782,11 +789,18 @@ public class FakeRequest implements HttpServletRequest {
 	}
 	
 	void setParameter(String key, String value) {
-		m_params.setProperty(key, value);
+		if (this.queryParams.containsKey(key)) {
+			this.queryParams.get(key).add(value);
+		}
+		else {
+			ArrayList<String> newValArr = new ArrayList<String>();
+			newValArr.add(value);
+			this.queryParams.put(key, newValArr);
+		}
 	}
 	
 	void clearParameters() {
-		m_params.clear();
+		this.queryParams.clear();
 	}
 	
 	public boolean hasSession() {
@@ -796,8 +810,8 @@ public class FakeRequest implements HttpServletRequest {
 		return ((m_session != null) && m_session.isValid());
 	}
 		
-	private Properties m_params = new Properties();
 	private Properties m_props = new Properties();
 	private FakeSession m_session = null;
 	private String m_method;
 }
+ 
