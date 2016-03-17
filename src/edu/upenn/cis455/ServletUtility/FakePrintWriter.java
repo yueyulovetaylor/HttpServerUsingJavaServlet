@@ -83,13 +83,13 @@ public class FakePrintWriter extends PrintWriter {
 			buffer[this.curBufferSize] = inputStr.charAt(i);
 			this.curBufferSize++;
 			if (this.curBufferSize == this.BUFFER_MAX_SIZE) {
-				this.flushBuffer();
+				this.flush();
 			}
 		}
 		
 		// flushBuffer if it is the end of the HTML
 		if (inputStr.contains("/HTML")) {
-			this.flushBuffer();
+			this.flush();
 		}
 		
 //		System.out.println("----- FakePrintWriter:println(): Exiting");
@@ -100,7 +100,7 @@ public class FakePrintWriter extends PrintWriter {
 	 * this method out print all current buffer to socket and flip isCommited 
 	 * to true
 	 */
-	public void flushBuffer() {
+	public void flush() {
 		byte[] toOut = new String(this.buffer).getBytes(StandardCharsets.UTF_8);
 		try {
 			this.curOut.write(toOut);

@@ -454,6 +454,8 @@ public class FakeResponse implements HttpServletResponse {
 	 * Return the printerWriter object
 	 */
 	public PrintWriter getWriter() throws IOException {
+		
+		
 		return this.fPW;
 	}
 
@@ -519,7 +521,7 @@ public class FakeResponse implements HttpServletResponse {
 	 * Call flushBuffer() API in PrintWriter object
 	 */
 	public void flushBuffer() throws IOException {
-		this.fPW.flushBuffer();
+		this.fPW.flush();
 	}
 
 	/* 

@@ -161,6 +161,13 @@
       <!-- Load this servlet at server startup time -->
       <load-on-startup/>
     </servlet>
+    
+    <servlet>
+      <servlet-name>ExtraDemo</servlet-name>
+      <servlet-class>ExtraDemo</servlet-class>
+      <!-- Load this servlet at server startup time -->
+      <load-on-startup/>
+    </servlet>
 
     <servlet-mapping>
       <servlet-name>demo</servlet-name>
@@ -220,6 +227,11 @@
     <servlet-mapping>
       <servlet-name>GetParam</servlet-name>
       <url-pattern>/getParam</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>ExtraDemo</servlet-name>
+      <url-pattern>/extra</url-pattern>
     </servlet-mapping>
 
     <!-- Define the default session timeout for your application,

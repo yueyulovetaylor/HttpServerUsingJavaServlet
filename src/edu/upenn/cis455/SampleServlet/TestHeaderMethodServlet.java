@@ -14,7 +14,7 @@ public class TestHeaderMethodServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("----- TestHeaderMethodServlet:Service(DOPOST)(): Entering");
 		
-		response.setContentType("text/html");
+//		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("Test Header and Method Servlet\n");
 		out.println("Method: " + request.getMethod() + "\n");

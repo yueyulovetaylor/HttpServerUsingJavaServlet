@@ -27,8 +27,6 @@ import edu.upenn.cis455.ServletUtility.FakeRequest;
 import edu.upenn.cis455.ServletUtility.FakeResponse;
 import edu.upenn.cis455.ServletUtility.TestHarness.Handler;
 
-
-
 /*
  * This is the class dealing with the responses, in milestone 2, besides taking
  * in the same object as Milestone 1, we would parse additional servlet objects

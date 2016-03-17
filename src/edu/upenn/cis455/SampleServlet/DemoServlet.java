@@ -11,6 +11,6 @@ public class DemoServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("<HTML><HEAD><TITLE>Simple Servlet</TITLE></HEAD><BODY>");
 		out.println("<P>Hello!</P>");
-		out.println("</BODY></HTML>");		
+		out.println("</BODY></HTML>");
 	}
 }
